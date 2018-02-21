@@ -4,8 +4,8 @@
  * Test: Tracy\Dumper custom object exporters
  */
 
-use Tracy\Dumper;
 use Tester\Assert;
+use Tracy\Dumper;
 
 
 require __DIR__ . '/../bootstrap.php';
@@ -37,12 +37,49 @@ $obj = unserialize('O:1:"Y":7:{s:1:"a";N;s:1:"b";i:2;s:4:"' . "\0" . '*' . "\0" 
 Assert::match('__PHP_Incomplete_Class #%a%
    className => "Y"
    private => array (3)
-   |  "Y::$e" => NULL
+   |  "Y::$e" => null
    |  "Y::$i" => "bar" (3)
    |  "X::$i" => "foo" (3)
    protected => array (2)
-   |  c => NULL
+   |  c => null
    |  d => "d"
    public => array (2)
-   |  a => NULL
+   |  a => null
    |  b => 2', Dumper::toText($obj));
+
+
+
+
+Dumper::$objectExporters = [
+	null => function ($var) { return ['type' => 'NULL']; },
+	'Iterator' => function ($var) { return ['type' => 'Default Iterator']; },
+];
+$exporters = [
+	'Iterator' => function ($var) { return ['type' => 'Iterator']; },
+	'SplFileInfo' => function ($var) { return ['type' => 'SplFileInfo']; },
+	'SplFileObject' => function ($var) { return ['type' => 'SplFileObject']; },
+];
+Assert::match('SplFileInfo #%a%
+   type => "SplFileInfo" (11)
+', Dumper::toText(new SplFileInfo(__FILE__), [Dumper::OBJECT_EXPORTERS => $exporters])
+);
+Assert::match('SplFileObject #%a%
+   type => "SplFileObject" (13)
+', Dumper::toText(new SplFileObject(__FILE__), [Dumper::OBJECT_EXPORTERS => $exporters])
+);
+Assert::match('ArrayIterator #%a%
+   type => "Iterator" (8)
+', Dumper::toText(new ArrayIterator([]), [Dumper::OBJECT_EXPORTERS => $exporters])
+);
+Assert::match('stdClass #%a%
+   type => "NULL" (4)
+', Dumper::toText(new stdClass, [Dumper::OBJECT_EXPORTERS => $exporters])
+);
+Assert::match('ArrayIterator #%a%
+   type => "Default Iterator" (16)
+', Dumper::toText(new ArrayIterator([]))
+);
+Assert::match('stdClass #%a%
+   type => "NULL" (4)
+', Dumper::toText(new stdClass)
+);

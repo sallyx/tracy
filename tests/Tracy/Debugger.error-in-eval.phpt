@@ -3,12 +3,11 @@
 /**
  * Test: Tracy\Debugger eval error in HTML.
  * @httpCode   500
- * @exitCode   254
- * @outputMatchFile Debugger.error-in-eval.expect
+ * @exitCode   255
+ * @outputMatchFile expected/Debugger.error-in-eval.expect
  */
 
 use Tracy\Debugger;
-use Tester\Assert;
 
 
 require __DIR__ . '/../bootstrap.php';
@@ -18,10 +17,11 @@ if (PHP_SAPI === 'cli') {
 }
 
 
-Debugger::$productionMode = FALSE;
+Debugger::$productionMode = false;
 header('Content-Type: text/html');
 
 Debugger::enable();
+
 
 function first($user, $pass)
 {

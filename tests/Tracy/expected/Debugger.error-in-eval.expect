@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- "' --></script></style></pre></xmp></table></a></abbr></address></article></aside></audio></b></bdi></bdo></blockquote></button></canvas></caption></cite></code></datalist></del></details></dfn></div></dl></em></fieldset></figcaption></figure></footer></form></h1></h2></h3></h4></h5></h6></header></hgroup></i></iframe></ins></kbd></label></legend></map></mark></menu></meter></nav></noscript></object></ol></optgroup></output></progress></q></rp></rt></ruby></s></samp></section></select></small></span></strong></sub></summary></sup></textarea></time></title></tr></u></ul></var></video>
+<!DOCTYPE html><!-- "' --></textarea></script></style></pre></xmp></a></iframe></noembed></noframes></noscript></option></select></template></title></table>
 <html>
 <head>
 	<meta charset="utf-8">
@@ -18,7 +18,8 @@
 		<div id="tracy-bs-error" class="panel">
 			<p>User Error</p>
 
-			<h1>The my error			<a href="%a%" rel="noreferrer">search&#x25ba;</a>
+			<h1><span>The my error</span>
+			<a href="%a%" rel="noreferrer noopener">search&#x25ba;</a>
 			</h1>
 		</div>
 
@@ -126,6 +127,8 @@
 
 
 
+
+
 		<div class="panel">
 		<h2><a data-tracy-ref="^+" class="tracy-toggle tracy-collapsed">Environment</a></h2>
 
@@ -143,12 +146,6 @@
 
 
 						<h3><a data-tracy-ref="^+" class="tracy-toggle tracy-collapsed">Constants</a></h3>
-			<div class="outer tracy-collapsed">
-			<table>%A%</table>
-			</div>
-
-
-			<h3><a data-tracy-ref="^+" class="tracy-toggle tracy-collapsed">Included files</a> (%d%)</h3>
 			<div class="outer tracy-collapsed">
 			<table>%A%</table>
 			</div>

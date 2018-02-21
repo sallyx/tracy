@@ -8,7 +8,6 @@
  */
 
 use Tracy\Debugger;
-use Tester\Assert;
 
 
 require __DIR__ . '/../bootstrap.php';
@@ -18,7 +17,7 @@ if (PHP_SAPI === 'cli') {
 }
 
 
-Debugger::$productionMode = TRUE;
+Debugger::$productionMode = true;
 header('Content-Type: text/html');
 
 Debugger::enable();

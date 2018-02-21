@@ -3,12 +3,11 @@
 /**
  * Test: Tracy\Debugger exception in production mode.
  * @httpCode   500
- * @exitCode   254
+ * @exitCode   255
  * @outputMatch %A%<h1>Server Error</h1>%A%
  */
 
 use Tracy\Debugger;
-use Tester\Assert;
 
 
 require __DIR__ . '/../bootstrap.php';
@@ -18,7 +17,7 @@ if (PHP_SAPI === 'cli') {
 }
 
 
-Debugger::$productionMode = TRUE;
+Debugger::$productionMode = true;
 header('Content-Type: text/html');
 
 Debugger::enable();

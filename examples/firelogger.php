@@ -4,18 +4,17 @@ require __DIR__ . '/../src/tracy.php';
 
 use Tracy\Debugger;
 
-$arr = [10, 20, ['key1' => 'val1', 'key2' => TRUE]];
+$arr = [10, 20, ['key1' => 'val1', 'key2' => true]];
 
-// will show in FireLogger tab in Firebug
+// will show in FireLogger
 Debugger::fireLog('Hello World');
 Debugger::fireLog($arr);
 
 
 function first($arg1, $arg2)
 {
-	second(TRUE, FALSE);
+	second(true, false);
 }
-
 
 
 function second($arg1, $arg2)
@@ -29,6 +28,7 @@ function third($arg1)
 	throw new Exception('The my exception', 123);
 }
 
+
 try {
 	first(10, 'any string');
 } catch (Exception $e) {
@@ -40,4 +40,4 @@ try {
 
 <h1>Tracy: FireLogger demo</h1>
 
-<p>Requires Firefox, Firebug and <a href="http://firelogger.binaryage.com">FireLogger</a>.</p>
+<p>How to <a href="https://tracy.nette.org/#toc-firelogger">enable FireLogger</a>?</p>

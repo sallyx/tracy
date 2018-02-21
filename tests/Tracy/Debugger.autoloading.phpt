@@ -2,21 +2,20 @@
 
 /**
  * Test: Tracy\Debugger autoloading.
- * @outputMatch %A%Strict Standards: Declaration of B::test() should be compatible %a% A::test() in %A%
+ * @outputMatch %A%: Declaration of B::test(%a?%) should be compatible %a% A::test() in %A%
  */
 
 use Tracy\Debugger;
-use Tester\Assert;
 
 
 require __DIR__ . '/../bootstrap.php';
 
 
-Debugger::$productionMode = FALSE;
+Debugger::$productionMode = false;
 header('Content-Type: text/plain');
 
 Debugger::enable();
 
 
 // in this case autoloading is not triggered
-include 'E_STRICT.inc';
+include __DIR__ . '/fixtures/E_STRICT.php';

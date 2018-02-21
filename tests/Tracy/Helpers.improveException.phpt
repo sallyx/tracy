@@ -5,8 +5,8 @@
  * @phpversion 7
  */
 
-use Tracy\Helpers;
 use Tester\Assert;
+use Tracy\Helpers;
 
 
 require __DIR__ . '/../bootstrap.php';
@@ -16,25 +16,35 @@ class TestClass
 {
 	public $public;
 
-	protected $protected;
-
 	public static $publicStatic;
 
+	protected $protected;
+
+
 	public function publicMethod()
-	{}
+	{
+	}
+
 
 	public static function publicMethodStatic()
-	{}
+	{
+	}
+
 
 	protected function protectedMethod()
-	{}
+	{
+	}
+
 
 	protected static function protectedMethodS()
-	{}
+	{
+	}
 }
 
+
 function myFunction()
-{}
+{
+}
 
 
 $obj = new TestClass;
@@ -44,7 +54,8 @@ $obj = new TestClass;
 test(function () {
 	try {
 		trimx();
-	} catch (\Error $e) {}
+	} catch (\Error $e) {
+	}
 	Helpers::improveException($e);
 	Assert::same('Call to undefined function trimx(), did you mean trim()?', $e->getMessage());
 });
@@ -52,15 +63,17 @@ test(function () {
 test(function () {
 	try {
 		abc\trimx();
-	} catch (\Error $e) {}
+	} catch (\Error $e) {
+	}
 	Helpers::improveException($e);
-	Assert::same('Call to undefined function abc\trimx(), did you mean trim()?', $e->getMessage());
+	Assert::same('Call to undefined function trimx(), did you mean trim()?', $e->getMessage());
 });
 
 test(function () {
 	try {
 		myFunctionx();
-	} catch (\Error $e) {}
+	} catch (\Error $e) {
+	}
 	Helpers::improveException($e);
 	Assert::same('Call to undefined function myFunctionx(), did you mean myfunction()?', $e->getMessage());
 });
@@ -68,7 +81,8 @@ test(function () {
 test(function () {
 	try {
 		TestClass::publicMethodX();
-	} catch (\Error $e) {}
+	} catch (\Error $e) {
+	}
 	Helpers::improveException($e);
 	Assert::same('Call to undefined method TestClass::publicMethodX(), did you mean publicMethod()?', $e->getMessage());
 });
@@ -76,7 +90,8 @@ test(function () {
 test(function () use ($obj) {
 	try {
 		$obj->publicMethodX();
-	} catch (\Error $e) {}
+	} catch (\Error $e) {
+	}
 	Helpers::improveException($e);
 	Assert::same('Call to undefined method TestClass::publicMethodX(), did you mean publicMethod()?', $e->getMessage());
 });
@@ -84,7 +99,8 @@ test(function () use ($obj) {
 test(function () use ($obj) { // suggest static method
 	try {
 		$obj->publicMethodStaticX();
-	} catch (\Error $e) {}
+	} catch (\Error $e) {
+	}
 	Helpers::improveException($e);
 	Assert::same('Call to undefined method TestClass::publicMethodStaticX(), did you mean publicMethodStatic()?', $e->getMessage());
 });
@@ -92,9 +108,21 @@ test(function () use ($obj) { // suggest static method
 test(function () use ($obj) { // suggest only public method
 	try {
 		$obj->protectedMethodX();
-	} catch (\Error $e) {}
+	} catch (\Error $e) {
+	}
 	Helpers::improveException($e);
 	Assert::same('Call to undefined method TestClass::protectedMethodX()', $e->getMessage());
+});
+
+test(function () { // do not suggest anything when accessing anonymous class
+	try {
+		$obj = new class {
+		};
+		$obj->method();
+	} catch (\Error $e) {
+	}
+	Helpers::improveException($e);
+	Assert::same('Call to undefined method class@anonymous::method()', $e->getMessage());
 });
 
 
@@ -123,7 +151,8 @@ test(function () use ($obj) { // suggest only public property
 test(function () use ($obj) { // suggest only static property
 	try {
 		$val = TestClass::$publicStaticX;
-	} catch (\Error $e) {}
+	} catch (\Error $e) {
+	}
 	Helpers::improveException($e);
 	Assert::same('Access to undeclared static property: TestClass::$publicStaticX, did you mean $publicStatic?', $e->getMessage());
 });
@@ -131,9 +160,31 @@ test(function () use ($obj) { // suggest only static property
 test(function () use ($obj) { // suggest only public static property
 	try {
 		$val = TestClass::$protectedMethodX;
-	} catch (\Error $e) {}
+	} catch (\Error $e) {
+	}
 	Helpers::improveException($e);
 	Assert::same('Access to undeclared static property: TestClass::$protectedMethodX', $e->getMessage());
+});
+
+test(function () { // do not suggest anything when accessing anonymous class
+	$obj = new class {
+	};
+	@$val = $obj->property;
+	$e = new ErrorException(error_get_last()['message'], 0, error_get_last()['type']);
+	Helpers::improveException($e);
+	Assert::same('Undefined property: class@anonymous::$property', $e->getMessage());
+});
+
+test(function () { // do not suggest anything when accessing anonymous class
+	try {
+		$obj = new class {
+		};
+		@$val = $obj::$property;
+	} catch (\Error $e) {
+	}
+	$e = new ErrorException(error_get_last()['message'], 0, error_get_last()['type']);
+	Helpers::improveException($e);
+	Assert::same('Undefined property: class@anonymous::$property', $e->getMessage());
 });
 
 

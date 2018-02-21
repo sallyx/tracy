@@ -7,52 +7,52 @@
  * @outputMatch OK!
  */
 
-use Tracy\Debugger;
 use Tester\Assert;
+use Tracy\Debugger;
 
 
 require __DIR__ . '/../bootstrap.php';
 
 
-Debugger::$productionMode = FALSE;
+Debugger::$productionMode = false;
 header('Content-Type: text/plain');
 
+ob_start();
 Debugger::enable();
 
-$onFatalErrorCalled = FALSE;
+$onFatalErrorCalled = false;
 
-register_shutdown_function(function () use (& $onFatalErrorCalled) {
+register_shutdown_function(function () use (&$onFatalErrorCalled) {
 	Assert::true($onFatalErrorCalled);
-	Assert::match(extension_loaded('xdebug') ? "
-Fatal error: Cannot re-assign \$this in %a%
-exception 'ErrorException' with message 'Cannot re-assign \$this' in %a%
+	Assert::match(extension_loaded('xdebug') ? '
+Fatal error: Cannot re-assign $this in %a%
+ErrorException: Cannot re-assign $this in %a%
 Stack trace:
 #0 %a%: third()
 #1 %a%: second()
 #2 %a%: first()
 #3 {main}
-Unable to log error: Directory is not specified.
-" : "
-Fatal error: Cannot re-assign \$this in %a%
-exception 'ErrorException' with message 'Cannot re-assign \$this' in %a%
+Unable to log error: Logging directory is not specified.
+' : '
+Fatal error: Cannot re-assign $this in %a%
+ErrorException: Cannot re-assign $this in %a%
 Stack trace:
 #0 [internal function]: Tracy\\Debugger::shutdownHandler()
 #1 {main}
-Unable to log error: Directory is not specified.
-", ob_get_clean());
+Unable to log error: Logging directory is not specified.
+', ob_get_clean());
 	echo 'OK!'; // prevents PHP bug #62725
 });
 
 
-Debugger::$onFatalError[] = function () use (& $onFatalErrorCalled) {
-	$onFatalErrorCalled = TRUE;
+Debugger::$onFatalError[] = function () use (&$onFatalErrorCalled) {
+	$onFatalErrorCalled = true;
 };
-ob_start();
 
 
 function first($arg1, $arg2)
 {
-	second(TRUE, FALSE);
+	second(true, false);
 }
 
 
@@ -64,7 +64,7 @@ function second($arg1, $arg2)
 
 function third($arg1)
 {
-	require 'E_COMPILE_ERROR.inc';
+	require __DIR__ . '/fixtures/E_COMPILE_ERROR.php';
 }
 
 

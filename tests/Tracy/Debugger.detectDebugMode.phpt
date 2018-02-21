@@ -4,8 +4,8 @@
  * Test: Tracy\Debugger::detectDebugMode()
  */
 
-use Tracy\Debugger;
 use Tester\Assert;
+use Tracy\Debugger;
 
 
 require __DIR__ . '/../bootstrap.php';
@@ -82,10 +82,10 @@ test(function () {
 	Debugger::enable();
 	Assert::true(Debugger::$productionMode);
 
-	Debugger::enable(TRUE);
+	Debugger::enable(true);
 	Assert::true(Debugger::$productionMode);
 
-	Debugger::enable(FALSE);
+	Debugger::enable(false);
 	Assert::false(Debugger::$productionMode);
 
 	Debugger::enable($_SERVER['REMOTE_ADDR']);

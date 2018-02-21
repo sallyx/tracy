@@ -2,9 +2,9 @@
 
 /**
  * Test: Tracy\Debugger::enable() error.
- * @exitCode   254
+ * @exitCode   255
  * @httpCode   500
- * @outputMatch exception 'RuntimeException' with message%A%
+ * @outputMatch RuntimeException: %A%
  */
 
 use Tracy\Debugger;

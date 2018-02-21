@@ -2,26 +2,26 @@
 
 /**
  * Test: Tracy\Debugger exception in non-HTML.
- * @exitCode   254
+ * @exitCode   255
  * @httpCode   500
- * @outputMatchFile Debugger.exception.nonhtml.expect
+ * @outputMatchFile expected/Debugger.exception.nonhtml.expect
  */
 
 use Tracy\Debugger;
-use Tester\Assert;
 
 
 require __DIR__ . '/../bootstrap.php';
 
 
-Debugger::$productionMode = FALSE;
+Debugger::$productionMode = false;
 header('Content-Type: text/plain');
 
 Debugger::enable();
 
+
 function first($arg1, $arg2)
 {
-	second(TRUE, FALSE);
+	second(true, false);
 }
 
 

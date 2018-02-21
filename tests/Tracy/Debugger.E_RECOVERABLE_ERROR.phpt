@@ -4,37 +4,34 @@
  * Test: Tracy\Debugger E_RECOVERABLE_ERROR error.
  */
 
-use Tracy\Debugger;
 use Tester\Assert;
+use Tracy\Debugger;
 
 
 require __DIR__ . '/../bootstrap.php';
 
 
-Debugger::$productionMode = FALSE;
+Debugger::$productionMode = false;
 
 Debugger::enable();
 
 
 class TestClass
 {
-
-	function test1(array $val)
+	public function test1(array $val)
 	{
 	}
 
 
-	function test2(TestClass $val)
+	public function test2(self $val)
 	{
 	}
 
 
-	function __toString()
+	public function __toString()
 	{
-		return FALSE;
+		return false;
 	}
-
-
 }
 
 
@@ -43,12 +40,12 @@ $obj = new TestClass;
 Assert::exception(function () use ($obj) {
 	// Invalid argument #1
 	$obj->test1('hello');
-}, 'ErrorException', 'Argument 1 passed to TestClass::test1() must be %a% array, string given, called in %a%');
+}, PHP_MAJOR_VERSION < 7 ? 'ErrorException' : 'TypeError', 'Argument 1 passed to TestClass::test1() must be %a% array, string given, called in %a%');
 
 Assert::exception(function () use ($obj) {
 	// Invalid argument #2
 	$obj->test2('hello');
-}, 'ErrorException', 'Argument 1 passed to TestClass::test2() must be an instance of TestClass, string given, called in %a%');
+}, PHP_MAJOR_VERSION < 7 ? 'ErrorException' : 'TypeError', 'Argument 1 passed to TestClass::test2() must be an instance of TestClass, string given, called in %a%');
 
 Assert::exception(function () use ($obj) {
 	// Invalid toString

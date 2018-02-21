@@ -7,52 +7,60 @@
  * @outputMatch OK!
  */
 
-use Tracy\Debugger;
 use Tester\Assert;
+use Tracy\Debugger;
 
 
 require __DIR__ . '/../bootstrap.php';
 
 
-Debugger::$productionMode = FALSE;
+Debugger::$productionMode = false;
 header('Content-Type: text/plain');
 
+ob_start();
 Debugger::enable();
 
-$onFatalErrorCalled = FALSE;
+$onFatalErrorCalled = false;
 
-register_shutdown_function(function () use (& $onFatalErrorCalled) {
+register_shutdown_function(function () use (&$onFatalErrorCalled) {
 	Assert::true($onFatalErrorCalled);
-	Assert::match(extension_loaded('xdebug') ? "
+	Assert::match(PHP_MAJOR_VERSION > 5 ?
+"Error: Call to undefined function missing_function() in %a%
+Stack trace:
+#0 %a%: third(Array)
+#1 %a%: second(true, false)
+#2 %a%: first(10, 'any string')
+#3 {main}
+Unable to log error: Logging directory is not specified.
+" : (extension_loaded('xdebug') ? '
 Fatal error: Call to undefined function missing_function() in %a%
-exception 'ErrorException' with message 'Call to undefined function missing_function()' in %a%
+ErrorException: Call to undefined function missing_function() in %a%
 Stack trace:
 #0 %a%: third()
 #1 %a%: second()
 #2 %a%: first()
 #3 {main}
-Unable to log error: Directory is not specified.
-" : "
+Unable to log error: Logging directory is not specified.
+' : '
 Fatal error: Call to undefined function missing_function() in %a%
-exception 'ErrorException' with message 'Call to undefined function missing_function()' in %a%
+ErrorException: Call to undefined function missing_function() in %a%
 Stack trace:
 #0 [internal function]: Tracy\\Debugger::shutdownHandler()
 #1 {main}
-Unable to log error: Directory is not specified.
-", ob_get_clean());
+Unable to log error: Logging directory is not specified.
+'), ob_get_clean());
 	echo 'OK!'; // prevents PHP bug #62725
 });
 
 
-Debugger::$onFatalError[] = function () use (& $onFatalErrorCalled) {
-	$onFatalErrorCalled = TRUE;
+Debugger::$onFatalError[] = function () use (&$onFatalErrorCalled) {
+	$onFatalErrorCalled = true;
 };
-ob_start();
 
 
 function first($arg1, $arg2)
 {
-	second(TRUE, FALSE);
+	second(true, false);
 }
 
 

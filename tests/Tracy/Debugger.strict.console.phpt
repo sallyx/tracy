@@ -2,27 +2,27 @@
 
 /**
  * Test: Tracy\Debugger notices and warnings with $strictMode in console.
- * @exitCode   254
+ * @exitCode   255
  * @httpCode   500
- * @outputMatchFile Debugger.strict.console.expect
+ * @outputMatchFile expected/Debugger.strict.console.expect
  */
 
 use Tracy\Debugger;
-use Tester\Assert;
 
 
 require __DIR__ . '/../bootstrap.php';
 
 
-Debugger::$productionMode = FALSE;
+Debugger::$productionMode = false;
 header('Content-Type: text/plain');
 
-Debugger::$strictMode = TRUE;
+Debugger::$strictMode = true;
 Debugger::enable();
+
 
 function first($arg1, $arg2)
 {
-	second(TRUE, FALSE);
+	second(true, false);
 }
 
 

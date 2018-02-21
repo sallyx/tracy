@@ -5,8 +5,9 @@
  * @outputMatch OK!
  */
 
-use Tracy\Debugger;
 use Tester\Assert;
+use Tester\DomQuery;
+use Tracy\Debugger;
 
 
 require __DIR__ . '/../bootstrap.php';
@@ -16,15 +17,19 @@ if (PHP_SAPI === 'cli') {
 }
 
 
-Debugger::$productionMode = FALSE;
-Debugger::$showLocation = TRUE;
+Debugger::$productionMode = false;
+Debugger::$showLocation = true;
 header('Content-Type: text/html');
 
+ob_start();
 Debugger::enable();
 
 register_shutdown_function(function () {
-	preg_match('#debug.innerHTML = (".*");#', ob_get_clean(), $m);
-	Assert::match(<<<EOD
+	$output = ob_get_clean();
+	preg_match('#Tracy\.Debug\.init\((".*[^\\\\]"),#', $output, $m);
+	$rawContent = json_decode($m[1]);
+	$panelContent = (string) DomQuery::fromHtml($rawContent)->find('#tracy-debug-panel-Tracy-dumps')[0]['data-tracy-content'];
+	Assert::match(<<<'EOD'
 %A%<h1>Dumps</h1>
 
 <div class="tracy-inner tracy-DumpPanel">
@@ -35,10 +40,9 @@ in file %a% on line %d%" data-tracy-href="editor:%a%"><span class="tracy-dump-st
 </div>
 %A%
 EOD
-, json_decode($m[1]));
+, $panelContent);
 	echo 'OK!'; // prevents PHP bug #62725
 });
-ob_start();
 
 
 Debugger::barDump('value');

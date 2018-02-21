@@ -4,28 +4,19 @@
  * Test: Tracy\Dumper::toText()
  */
 
-use Tracy\Dumper;
 use Tester\Assert;
+use Tracy\Dumper;
 
 
 require __DIR__ . '/../bootstrap.php';
+require __DIR__ . '/fixtures/DumpClass.php';
 
 
-class Test
-{
-	public $x = [10, NULL];
+Assert::match('null', Dumper::toText(null));
 
-	private $y = 'hello';
+Assert::match('true', Dumper::toText(true));
 
-	protected $z = 30.0;
-}
-
-
-Assert::match('NULL', Dumper::toText(NULL));
-
-Assert::match('TRUE', Dumper::toText(TRUE));
-
-Assert::match('FALSE', Dumper::toText(FALSE));
+Assert::match('false', Dumper::toText(false));
 
 Assert::match('0', Dumper::toText(0));
 
@@ -58,14 +49,18 @@ Assert::match('array (5)
    |  7 => 7
 ', Dumper::toText([1, 'hello', [], [1, 2], [1 => 1, 2, 3, 4, 5, 6, 7]]));
 
-Assert::match("stream resource #%d%\n   wrapper_type%A%", Dumper::toText(fopen(__FILE__, 'r')));
+Assert::match("stream resource #%d%\n   %S%%A%", Dumper::toText(fopen(__FILE__, 'r')));
 
 Assert::match('stdClass #%a%', Dumper::toText(new stdClass));
+
+Assert::match('stdClass #%a%
+   "" => "foo" (3)
+', Dumper::toText((object) ['' => 'foo']));
 
 Assert::match('Test #%a%
    x => array (2)
    |  0 => 10
-   |  1 => NULL
+   |  1 => null
    y private => "hello" (5)
    z protected => 30.0
 ', Dumper::toText(new Test));

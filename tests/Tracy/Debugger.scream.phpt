@@ -2,24 +2,23 @@
 
 /**
  * Test: Tracy\Debugger notices and warnings in scream mode.
- * @outputMatchFile Debugger.scream.expect
+ * @outputMatchFile expected/Debugger.scream.expect
  */
 
 use Tracy\Debugger;
-use Tester\Assert;
 
 
 require __DIR__ . '/../bootstrap.php';
 
 
-Debugger::$productionMode = FALSE;
-Debugger::$scream = TRUE;
+Debugger::$productionMode = false;
+Debugger::$scream = true;
 header('Content-Type: text/plain; charset=utf-8');
 
 Debugger::enable();
 
-@mktime(); // E_STRICT
-@mktime(0, 0, 0, 1, 23, 1978, 1); // E_DEPRECATED
+@mktime(); // E_STRICT in PHP 5, E_DEPRECATED in PHP 7
+PHP_MAJOR_VERSION < 7 ? @mktime(0, 0, 0, 1, 23, 1978, 1) : @mktime(); // E_DEPRECATED
 @$x++; // E_NOTICE
 @min(1); // E_WARNING
-@require 'E_COMPILE_WARNING.inc'; // E_COMPILE_WARNING (not working)
+@require __DIR__ . '/fixtures/E_COMPILE_WARNING.php'; // E_COMPILE_WARNING (not working)

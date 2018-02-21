@@ -3,12 +3,11 @@
 /**
  * Test: Tracy\Debugger notices and warnings with $strictMode in HTML.
  * @httpCode   500
- * @exitCode   254
- * @outputMatchFile Debugger.strict.html.expect
+ * @exitCode   255
+ * @outputMatchFile expected/Debugger.strict.html.expect
  */
 
 use Tracy\Debugger;
-use Tester\Assert;
 
 
 require __DIR__ . '/../bootstrap.php';
@@ -18,15 +17,16 @@ if (PHP_SAPI === 'cli') {
 }
 
 
-Debugger::$productionMode = FALSE;
+Debugger::$productionMode = false;
 header('Content-Type: text/html');
 
-Debugger::$strictMode = TRUE;
+Debugger::$strictMode = true;
 Debugger::enable();
+
 
 function first($arg1, $arg2)
 {
-	second(TRUE, FALSE);
+	second(true, false);
 }
 
 

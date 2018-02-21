@@ -5,8 +5,9 @@
  * @outputMatch OK!
  */
 
-use Tracy\Debugger;
 use Tester\Assert;
+use Tester\DomQuery;
+use Tracy\Debugger;
 
 
 require __DIR__ . '/../bootstrap.php';
@@ -16,20 +17,23 @@ if (PHP_SAPI === 'cli') {
 }
 
 
-Debugger::$productionMode = FALSE;
+Debugger::$productionMode = false;
 header('Content-Type: text/html');
 
+ob_start();
 Debugger::enable();
 
 register_shutdown_function(function () {
-	preg_match('#debug.innerHTML = (".*");#', ob_get_clean(), $m);
-	Assert::matchFile(__DIR__ . '/Debugger.barDump().expect', json_decode($m[1]));
+	$output = ob_get_clean();
+	preg_match('#Tracy\.Debug\.init\((".*[^\\\\]"),#', $output, $m);
+	$rawContent = json_decode($m[1]);
+	$panelContent = (string) DomQuery::fromHtml($rawContent)->find('#tracy-debug-panel-Tracy-dumps')[0]['data-tracy-content'];
+	Assert::matchFile(__DIR__ . '/expected/Debugger.barDump().expect', $panelContent);
 	echo 'OK!'; // prevents PHP bug #62725
 });
-ob_start();
 
 
-$arr = [10, 20.2, TRUE, FALSE, NULL, 'hello', ['key1' => 'val1', 'key2' => TRUE], (object) ['key1' => 'val1', 'key2' => TRUE]];
+$arr = [10, 20.2, true, false, null, 'hello', ['key1' => 'val1', 'key2' => true], (object) ['key1' => 'val1', 'key2' => true]];
 
 Debugger::barDump($arr);
 

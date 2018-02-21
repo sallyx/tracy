@@ -2,19 +2,18 @@
 
 /**
  * Test: Tracy\Debugger exception in production & console mode.
- * @exitCode   254
+ * @exitCode   255
  * @httpCode   500
  * @outputMatch
  */
 
 use Tracy\Debugger;
-use Tester\Assert;
 
 
 require __DIR__ . '/../bootstrap.php';
 
 
-Debugger::$productionMode = TRUE;
+Debugger::$productionMode = true;
 header('Content-Type: text/plain');
 
 Debugger::enable();

@@ -7,8 +7,8 @@
  * @outputMatch OK!
  */
 
-use Tracy\Debugger;
 use Tester\Assert;
+use Tracy\Debugger;
 
 
 require __DIR__ . '/../bootstrap.php';
@@ -18,32 +18,33 @@ if (PHP_SAPI === 'cli') {
 }
 
 
-Debugger::$productionMode = FALSE;
+Debugger::$productionMode = false;
 header('Content-Type: text/html');
 
+ob_start();
 Debugger::enable();
 
 
-$onFatalErrorCalled = FALSE;
+$onFatalErrorCalled = false;
 
-register_shutdown_function(function () use (& $onFatalErrorCalled) {
+register_shutdown_function(function () use (&$onFatalErrorCalled) {
 	Assert::true($onFatalErrorCalled);
 	$output = ob_get_clean();
 	Assert::same(1, substr_count($output, '<!-- Tracy Debug Bar'));
-	Assert::matchFile(__DIR__ . (extension_loaded('xdebug') ? '/Debugger.E_ERROR.html.xdebug.expect' : '/Debugger.E_ERROR.html.expect'), $output);
+	Assert::matchFile(__DIR__ . '/expected/Debugger.E_ERROR.html' . (PHP_MAJOR_VERSION > 5 ? '' : (extension_loaded('xdebug') ? '.xdebug' : '.php5')) . '.expect', $output);
 	echo 'OK!'; // prevents PHP bug #62725
 });
 
 
-Debugger::$onFatalError[] = function () use (& $onFatalErrorCalled) {
-	$onFatalErrorCalled = TRUE;
+Debugger::$onFatalError[] = function () use (&$onFatalErrorCalled) {
+	// empty line
+	$onFatalErrorCalled = true;
 };
-ob_start();
 
 
 function first($arg1, $arg2)
 {
-	second(TRUE, FALSE);
+	second(true, false);
 }
 
 
